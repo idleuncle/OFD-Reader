@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>icons/document-open.png</file>
-        <file>icons/document-save.png</file>
-        <file>icons/go-next.png</file>
-        <file>icons/go-previous.png</file>
-    </qresource>
-</RCC>

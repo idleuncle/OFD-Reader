@@ -57,11 +57,11 @@ void OfdMainWindow::createActions()
 {
 
     m_mainToolbar = this->addToolBar(tr("Tool Bar"));
-    m_fileOpenAction = new QAction(QIcon(":/icons/document-open.png"),tr("&Open...", "Action: open file"), this);
+    m_fileOpenAction = new QAction(QIcon(":/icons/document-open.svg"),tr("&Open...", "Action: open file"), this);
     m_fileOpenAction->setObjectName("file_open");
 
-    m_fileSaveCopyAction = new QAction(QIcon(":/icons/document-save.png"),tr("&Open...", "Action: open file"), this);
-    m_fileSaveCopyAction->setObjectName("file_open");
+    m_fileSaveCopyAction = new QAction(QIcon(":/icons/document-save.svg"),tr("&Open...", "Action: open file"), this);
+    m_fileSaveCopyAction->setObjectName("file_save");
 
     connect(m_fileOpenAction, SIGNAL(triggered()), this, SLOT(slotOpenFile()));
     connect(m_fileSaveCopyAction, SIGNAL(triggered()), this, SLOT(slotSaveCopy()));
@@ -72,10 +72,12 @@ void OfdMainWindow::createActions()
     QHBoxLayout *navLayout = new QHBoxLayout;
     navBar->setLayout(navLayout);
     QToolButton *navPrevBtn = new QToolButton(navBar);
-    navPrevBtn->setIcon(QIcon(":/icons/go-previous.png"));
+    navPrevBtn->setIcon(QIcon(":/icons/go-previous.svg"));
+    navPrevBtn->setIconSize(QSize(40,40));
     connect(navPrevBtn,SIGNAL( clicked()), this, SLOT(slotGoToPreviousPage()));
     QToolButton *navNextBtn = new QToolButton(navBar);
-    navNextBtn->setIcon(QIcon(":/icons/go-next.png"));
+    navNextBtn->setIcon(QIcon(":/icons/go-next.svg"));
+    navNextBtn->setIconSize(QSize(40,40));
     connect(navNextBtn,SIGNAL( clicked()), this, SLOT(slotGoToNextPage()));
 
     navLayout->addWidget(navPrevBtn);

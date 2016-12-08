@@ -20,20 +20,21 @@ public:
     //工具栏
     QToolBar* m_mainToolbar;
 
-
     //pdf 显示模块
     OfdView* m_ofdView;
-
 
     //菜单事件
     QAction* m_fileOpenAction;
     QAction *m_fileSaveCopyAction;
 
 
-    libOfdEngine* m_OfdEngine;
 
     //ofd file
     QString m_file;
+
+    //Ofd Engine
+    libOfdEngine* m_OfdEngine;
+
 
     bool loadDocument(const QString &filename);
 
