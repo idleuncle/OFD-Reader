@@ -17,8 +17,10 @@ INCLUDEPATH += ./include
 HEADERS  += \
     include/libofdengine.h \
     include/ofdmainwindow.h \
-    include/ofdview.h \
-    include/typedef.h
+    include/documentcontroller.h \
+    include/pageitem.h \
+    include/typedef.h \
+    include/documentview.h
 
 #FORMS    += mainwindow.ui
 
@@ -26,14 +28,16 @@ SOURCES += \
     src/libofdengine.cpp \
     src/main.cpp \
     src/ofdmainwindow.cpp \
-    src/ofdview.cpp
+    src/documentcontroller.cpp \
+    src/pageitem.cpp \
+    src/documentview.cpp
 
 
  macx {
  # macx
     QT_CONFIG -= no-pkg-config
      INCLUDEPATH += /usr/local/Cellar/cairo/1.14.6_1/include
-     LIBS += -L/usr/local/lib -lcairo
+#     LIBS += -L/usr/local/lib -lcairo
  }
 
  unix:!macx {

@@ -13,3 +13,11 @@ todo:
     + 代码目录调整
     + 工具栏完善
     + 显示模块和大纲
+
+## Build
+
+``
+$ cd OFD-Reader
+$ mkdir build && cd build && qmake ../OFD-Reader.pro && make
+
+```

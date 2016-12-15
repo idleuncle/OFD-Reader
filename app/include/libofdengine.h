@@ -4,18 +4,46 @@
 #include <QList>
 #include <cairo/cairo.h>
 
-class libOfdEngine
-{
-public:
-    libOfdEngine();
 
-    bool load(const QString &filename);
+//class Document
+//{
 
-    void loadtest();
-    cairo_surface_t* test_page1();
-    cairo_surface_t* test_page2();
-    cairo_surface_t* test_page3();
-    QList<cairo_surface_t*> m_pages;
-};
+//};
+
+//class Page
+//{
+//    Page(int tmpindex){
+////        QString strPath = QString("/tmp/%1.jpg").arg(tmpindex);
+//    }
+
+//    cairo_surface_t* renderToCairo(int x, int y)
+//    {
+//        return NULL;
+//    }
+
+
+////    qreal Width(){
+
+//};
+
+//class libOfdEngine
+//{
+//public:
+//    libOfdEngine();
+//    virtual ~libOfdEngine()
+//    {
+//        for(int i = 0;i<m_allpages.count();i++)
+//        {
+//            delete m_allpages.at(i);
+
+//        }
+//        m_allpages.clear();
+//    }
+
+//    bool loadFile(const QString &filename);
+
+//    QList<Page*> m_allpages;
+
+//};
 
 #endif // LIBOFDENGINE_H
