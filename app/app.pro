@@ -14,13 +14,17 @@ TEMPLATE = app
 
 
 INCLUDEPATH += ./include
+INCLUDEPATH += ./plugin
 HEADERS  += \
     include/libofdengine.h \
     include/ofdmainwindow.h \
     include/documentcontroller.h \
     include/pageitem.h \
     include/typedef.h \
-    include/documentview.h
+    include/documentview.h \
+    plugin/model.h \
+    include/global.h \
+    include/pluginhandler.h
 
 #FORMS    += mainwindow.ui
 
@@ -30,7 +34,10 @@ SOURCES += \
     src/ofdmainwindow.cpp \
     src/documentcontroller.cpp \
     src/pageitem.cpp \
-    src/documentview.cpp
+    src/documentview.cpp \
+    plugin/model.cpp \
+    src/global.cpp \
+    src/pluginhandler.cpp
 
 
  macx {

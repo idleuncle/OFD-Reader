@@ -1,13 +1,20 @@
-#include "include/pageitem.h"
+#include "pageitem.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
+using namespace ofdreader;
+
 PageItem::PageItem()
 {
 
 }
 
 
+
+PageItem::PageItem(Model::IPage* page, int index, PaintMode paintMode /*= DefaultMode*/, QGraphicsItem* parent/* = 0*/)
+{
+
+}
 
 QRectF PageItem::boundingRect() const
 {

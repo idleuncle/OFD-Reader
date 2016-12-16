@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QFileDialog>
 #include "documentview.h"
+using namespace ofdreader;
 OfdMainWindow::OfdMainWindow(QWidget *parent) : QMainWindow(parent)
 {
 //    m_mainToolbar = NULL;
@@ -65,7 +66,15 @@ OfdMainWindow::~OfdMainWindow()
 
 int OfdMainWindow::addTab(DocumentView* tab)
 {
-    throw "add tab";
+//    const int index = s_settings->mainWindow().newTabNextToCurrentTab() ?
+//                    m_tabWidget->insertTab(m_tabWidget->currentIndex() + 1, tab, tab->title()) :
+//                    m_tabWidget->addTab(tab, tab->title());
+
+    const int index = m_tabWidget->addTab(tab, tab->title());
+//        m_tabWidget->setTabToolTip(index, tab->fileInfo().absoluteFilePath());
+        m_tabWidget->setCurrentIndex(index);
+
+        return index;
 }
 
 void OfdMainWindow::closeTab(DocumentView* tab)
@@ -157,7 +166,92 @@ void OfdMainWindow::on_open_triggered()
 
 void OfdMainWindow::on_open_new_tab_triggered()
 {
-    QMessageBox::information(this,tr("on_open_new_tab_triggered"),tr("on_open_new_tab_triggered"));
+//    const QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Open in new tab"));
+    const QString filepath = "/tmp/sample0.ofd";
+    openInNewTab(filepath);
+
+}
+
+bool OfdMainWindow::openInNewTab(const QString& filePath, int page, const QRectF& highlight, bool quiet)
+{
+    DocumentView* newTab = new DocumentView(this);
+
+    if(newTab->open(filePath))
+        {
+////            s_settings->mainWindow().setOpenPath(newTab->fileInfo().absolutePath());
+////            m_recentlyUsedMenu->addOpenAction(newTab->fileInfo());
+
+////            const int index = addTab(newTab);
+
+////            QAction* tabAction = new QAction(m_tabWidget->tabText(index), newTab);
+////            connect(tabAction, SIGNAL(triggered()), SLOT(on_tabAction_triggered()));
+
+////            tabAction->setData(true); // Flag action for search-as-you-type
+
+////            m_tabsMenu->addAction(tabAction);
+
+////            on_thumbnails_dockLocationChanged(dockWidgetArea(m_thumbnailsDock));
+
+////            connect(newTab, SIGNAL(documentChanged()), SLOT(on_currentTab_documentChanged()));
+////            connect(newTab, SIGNAL(documentModified()), SLOT(on_currentTab_documentModified()));
+
+////            connect(newTab, SIGNAL(numberOfPagesChanged(int)), SLOT(on_currentTab_numberOfPagesChaned(int)));
+////            connect(newTab, SIGNAL(currentPageChanged(int)), SLOT(on_currentTab_currentPageChanged(int)));
+
+////            connect(newTab, SIGNAL(canJumpChanged(bool,bool)), SLOT(on_currentTab_canJumpChanged(bool,bool)));
+
+////            connect(newTab, SIGNAL(continuousModeChanged(bool)), SLOT(on_currentTab_continuousModeChanged(bool)));
+////            connect(newTab, SIGNAL(layoutModeChanged(LayoutMode)), SLOT(on_currentTab_layoutModeChanged(LayoutMode)));
+////            connect(newTab, SIGNAL(rightToLeftModeChanged(bool)), SLOT(on_currentTab_rightToLeftModeChanged(bool)));
+////            connect(newTab, SIGNAL(scaleModeChanged(ScaleMode)), SLOT(on_currentTab_scaleModeChanged(ScaleMode)));
+////            connect(newTab, SIGNAL(scaleFactorChanged(qreal)), SLOT(on_currentTab_scaleFactorChanged(qreal)));
+////            connect(newTab, SIGNAL(rotationChanged(Rotation)), SLOT(on_currentTab_rotationChanged(Rotation)));
+
+////            connect(newTab, SIGNAL(linkClicked(int)), SLOT(on_currentTab_linkClicked(int)));
+////            connect(newTab, SIGNAL(linkClicked(bool,QString,int)), SLOT(on_currentTab_linkClicked(bool,QString,int)));
+
+////            connect(newTab, SIGNAL(renderFlagsChanged(qpdfview::RenderFlags)), SLOT(on_currentTab_renderFlagsChanged(qpdfview::RenderFlags)));
+
+////            connect(newTab, SIGNAL(invertColorsChanged(bool)), SLOT(on_currentTab_invertColorsChanged(bool)));
+////            connect(newTab, SIGNAL(convertToGrayscaleChanged(bool)), SLOT(on_currentTab_convertToGrayscaleChanged(bool)));
+////            connect(newTab, SIGNAL(trimMarginsChanged(bool)), SLOT(on_currentTab_trimMarginsChanged(bool)));
+
+////            connect(newTab, SIGNAL(compositionModeChanged(CompositionMode)), SLOT(on_currentTab_compositionModeChanged(CompositionMode)));
+
+////            connect(newTab, SIGNAL(highlightAllChanged(bool)), SLOT(on_currentTab_highlightAllChanged(bool)));
+////            connect(newTab, SIGNAL(rubberBandModeChanged(RubberBandMode)), SLOT(on_currentTab_rubberBandModeChanged(RubberBandMode)));
+
+////            connect(newTab, SIGNAL(searchFinished()), SLOT(on_currentTab_searchFinished()));
+////            connect(newTab, SIGNAL(searchProgressChanged(int)), SLOT(on_currentTab_searchProgressChanged(int)));
+
+////            connect(newTab, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_currentTab_customContextMenuRequested(QPoint)));
+
+////            newTab->show();
+
+////            s_database->restorePerFileSettings(newTab);
+////            scheduleSaveTabs();
+
+////            newTab->jumpToPage(page, false);
+////            newTab->setFocus();
+
+////            if(!highlight.isNull())
+////            {
+////                newTab->temporaryHighlight(page, highlight);
+////            }
+
+////            return true;
+////        }
+////        else
+////        {
+////            delete newTab;
+
+////            if(!quiet)
+////            {
+////                QMessageBox::warning(this, tr("Warning"), tr("Could not open '%1'.").arg(filePath));
+////            }
+        }
+
+        return false;
 }
 
 void OfdMainWindow::on_previous_page_triggered()
@@ -207,6 +301,7 @@ void OfdMainWindow::init()
     this->createActions();
     this->createToolbar();
     this->createMainMenu();
+    this->createDockers();
 }
 
 
@@ -216,7 +311,8 @@ void OfdMainWindow::createMainMenu()
         m_fileMenu = menuBar()->addMenu(tr("&File"));
         m_fileMenu->addActions(QList<QAction*>()
                                << m_fileOpenAction
-                               << m_fileNewTabAction);
+                               << m_fileNewTabAction
+                               );
 
 
         m_editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -232,6 +328,16 @@ void OfdMainWindow::createMainMenu()
                                << m_singlePageAction
                                << m_twoPageAction
                                );
+
+}
+
+void OfdMainWindow::createDockers()
+{
+
+    m_outlineDock = new QDockWidget("outline", this);
+    m_outlineDock->setObjectName("outline");
+    m_outlineDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    addDockWidget(Qt::LeftDockWidgetArea, m_outlineDock);
 
 }
 

@@ -12,6 +12,8 @@
 #include <QMenu>
 #include <QMenuBar>
 
+namespace ofdreader
+{
 class DocumentView;
 
 class OfdMainWindow : public QMainWindow
@@ -66,10 +68,12 @@ public:
 
 
 
+
     // Dock
     QDockWidget* m_outlineDock;
 
 
+    void createDockers();
 
 
     //弹出式 菜单
@@ -92,11 +96,9 @@ public:
     QToolBar* m_viewToolbar;
 
 
-    //pdf 显示模块
-    //    OfdView* m_ofdView;
+
 
     //菜单事件
-
     QAction *m_fileSaveCopyAction;
 
 
@@ -110,6 +112,7 @@ public:
 
     bool loadDocument(const QString &filename);
 
+    bool openInNewTab(const QString& filePath, int page = -1, const QRectF& highlight = QRectF(), bool quiet = false);
 private:
     //初始化事件
     void createActions();
@@ -142,4 +145,5 @@ protected slots:
     void on_two_page_triggered();
 };
 
+} // namespace ofdreader
 #endif // OfdMainWindow_H
