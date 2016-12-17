@@ -4,6 +4,8 @@
 #include <QMimeDatabase>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QDir>
+#include <QPluginLoader>
 const char* const ofdMimeType = "application/zip";
 
 using namespace ofdreader;
@@ -12,7 +14,12 @@ PluginHandler::PluginHandler(QObject* parent):
     QObject(parent),
     m_plugins()
 {
-    //    m_plugins.insert()
+#ifdef STATIC_IMAGE_PLUGIN
+    m_objectNames.insertMulti(Image, QLatin1String("ImagePlugin"));
+#else
+    m_fileNames.insertMulti(Image, QLatin1String(IMAGE_PLUGIN_NAME));
+#endif
+
 }
 
 PluginHandler::~PluginHandler()
@@ -83,12 +90,103 @@ bool isSupportedImageFormat(const QMimeType& mimeType)
     return QImageReader::supportedMimeTypes().contains(name);
 }
 
+
+
+Plugin* loadStaticPlugin(const QString& objectName)
+{
+
+    foreach(QObject* object, QPluginLoader::staticInstances())
+    {
+        if(object->objectName() == objectName)
+        {
+            Plugin* plugin = qobject_cast< Plugin* >(object);
+
+            if(plugin != 0)
+            {
+                return plugin;
+            }
+        }
+    }
+
+
+    qCritical() << "Could not load static plug-in:" << objectName;
+
+    return 0;
+}
+
+
+Plugin* loadPlugin(const QString& fileName)
+{
+    QPluginLoader pluginLoader;
+
+    const QString localFileName = QDir(QApplication::applicationDirPath()).absoluteFilePath(fileName);
+    qDebug()<<"localFileName"<<localFileName;
+    pluginLoader.setFileName(localFileName);
+
+    if(!pluginLoader.load())
+    {
+        const QString localErrorString = pluginLoader.errorString();
+
+        const QString globalFileName = QDir(PLUGIN_INSTALL_PATH).absoluteFilePath(fileName);
+        pluginLoader.setFileName(globalFileName);
+
+        if(!pluginLoader.load())
+        {
+            const QString globalErrorString = pluginLoader.errorString();
+
+            qCritical() << "Could not load local plug-in:" << localFileName;
+            qCritical() << localErrorString;
+
+            qCritical() << "Could not load global plug-in:" << globalFileName;
+            qCritical() << globalErrorString;
+
+            return 0;
+        }
+    }
+
+    Plugin* plugin = qobject_cast< Plugin* >(pluginLoader.instance());
+
+    if(plugin == 0)
+    {
+        qCritical() << "Could not instantiate plug-in:" << pluginLoader.fileName();
+        qCritical() << pluginLoader.errorString();
+    }
+
+    return plugin;
+}
+
 bool PluginHandler::loadPlugin(FileType fileType)
 {
+//    QPluginLoader pluginLoader;
+
+//    const QString localFileName = QDir(QApplication::applicationDirPath()).absoluteFilePath(fileName);
+//    pluginLoader.setFileName(localFileName);
     if(m_plugins.contains(fileType))
     {
         return true;
     }
+
+
+    foreach(const QString& objectName, m_objectNames.values(fileType))
+    {
+
+        if(Plugin* plugin = ::loadStaticPlugin(objectName))
+        {
+            m_plugins.insert(fileType, plugin);
+
+            return true;
+        }
+    }
+
+    foreach(const QString& fileName, m_fileNames.values(fileType))
+       {
+           if(Plugin* plugin = ::loadPlugin(fileName))
+           {
+               m_plugins.insert(fileType, plugin);
+
+               return true;
+           }
+       }
 
     return false;
 }

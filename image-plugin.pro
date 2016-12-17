@@ -3,7 +3,8 @@ include(OFD-Reader.pri)
 TARGET = ofdreader_image
 TEMPLATE = lib
 CONFIG += plugin
-static_image_plugin:CONFIG += static
+CONFIG += console
+!static_image_plugin:CONFIG += staticlib
 
 TARGET_SHORT = ofdreaderimg
 !isEmpty(PLUGIN_DESTDIR): DESTDIR = $$PLUGIN_DESTDIR

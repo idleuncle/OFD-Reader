@@ -167,7 +167,8 @@ void OfdMainWindow::on_open_triggered()
 void OfdMainWindow::on_open_new_tab_triggered()
 {
 //    const QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Open in new tab"));
-    const QString filepath = "/tmp/sample0.ofd";
+//    const QString filepath = "/tmp/sample0.ofd";
+    const QString filepath = "/tmp/1.jpg";
     openInNewTab(filepath);
 
 }

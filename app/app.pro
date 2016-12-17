@@ -10,6 +10,26 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = OFD-Reader
 TEMPLATE = app
+CONFIG += static
+
+DEFINES += PLUGIN_INSTALL_PATH=\\\"$${PLUGIN_INSTALL_PATH}\\\"
+
+!without_image {
+    DEFINES += WITH_IMAGE
+
+    static_image_plugin {
+        isEmpty(IMAGE_PLUGIN_NAME):IMAGE_PLUGIN_NAME = libofdreader_image.a
+
+        DEFINES += STATIC_IMAGE_PLUGIN
+        LIBS += $$IMAGE_PLUGIN_NAME
+        PRE_TARGETDEPS += $$IMAGE_PLUGIN_NAME
+    }
+    else {
+        isEmpty(IMAGE_PLUGIN_NAME):IMAGE_PLUGIN_NAME = libofdreader_image.dylib
+    }
+
+    DEFINES += IMAGE_PLUGIN_NAME=\\\"$${IMAGE_PLUGIN_NAME}\\\"
+}
 
 
 

@@ -28,6 +28,7 @@ namespace ofdreader
         };
 
     private:
+        Q_DISABLE_COPY(PluginHandler)
 
         static PluginHandler* s_instance;
 
@@ -35,6 +36,11 @@ namespace ofdreader
 
         // 查找文件类型
         FileType findFileType(const QString& filePath);
+
+        // 静态加载插件
+        QMultiMap< FileType, QString > m_objectNames;
+
+        QMultiMap< FileType, QString > m_fileNames;
 
         bool loadPlugin(FileType fileType);
 
