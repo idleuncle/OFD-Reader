@@ -2,12 +2,13 @@
 #include "model.h"
 #include "pluginhandler.h"
 #include "pageitem.h"
+#include "global.h"
 using namespace ofdreader;
 
 DocumentView::DocumentView(QWidget *parent):
     QGraphicsView(parent)
 {
-
+    m_document = NULL;
 }
 
 
@@ -34,11 +35,191 @@ void DocumentView::preparePages()
 
 void DocumentView::prepareDocument(Model::IDocument* document, const QVector<Model::IPage*>& pages)
 {
+    qDeleteAll(m_pageItems);
+
+    qDeleteAll(m_pages);
+
     m_pages = pages;
     delete m_document;
+
     m_document = document;
     preparePages();
 }
+
+bool DocumentView::checkDocument(const QString& filePath, Model::IDocument* document, QVector<Model::IPage*>& pages)
+{
+//    if(document->isLocked())
+//    {
+//        QString password = QInputDialog::getText(this, tr("Unlock %1").arg(QFileInfo(filePath).completeBaseName()), tr("Password:"), QLineEdit::Password);
+
+//        if(document->unlock(password))
+//        {
+//            return false;
+//        }
+//    }
+
+    const int numberOfPages = document->numberOfPages();
+
+    if(numberOfPages == 0)
+    {
+        qWarning() << "No pages were found in document at" << filePath;
+
+        return false;
+    }
+
+    pages.reserve(numberOfPages);
+
+    for(int index = 0; index < numberOfPages; ++index)
+    {
+        Model::IPage* page = document->page(index);
+
+        if(page == 0)
+        {
+            qWarning() << "No page" << index << "was found in document at" << filePath;
+
+            return false;
+        }
+
+        pages.append(page);
+    }
+
+    return true;
+}
+
+DocumentView::~DocumentView()
+{
+    if(m_document)
+    {
+        delete m_document;
+        m_document = NULL;
+    }
+}
+
+
+void DocumentView::prepareScene()
+{
+    // prepare render parameters and adjust scale factor
+
+//    RenderParam renderParam(logicalDpiX(), logicalDpiY(), 1.0,
+//                            scaleFactor(), rotation(), renderFlags());
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,1,0)
+
+//    if(s_settings->pageItem().useDevicePixelRatio())
+//    {
+//        renderParam.setDevicePixelRatio(devicePixelRatio());
+//    }
+
+#endif // QT_VERSION
+
+//    const qreal visibleWidth = m_layout->visibleWidth(viewport()->width());
+//    const qreal visibleHeight = m_layout->visibleHeight(viewport()->height());
+
+//    foreach(PageItem* page, m_pageItems)
+//    {
+//        const QSizeF displayedSize = page->displayedSize(renderParam);
+
+//        if(m_scaleMode == FitToPageWidthMode)
+//        {
+//            adjustScaleFactor(renderParam, visibleWidth / displayedSize.width());
+//        }
+//        else if(m_scaleMode == FitToPageSizeMode)
+//        {
+//            adjustScaleFactor(renderParam, qMin(visibleWidth / displayedSize.width(), visibleHeight / displayedSize.height()));
+//        }
+
+//        page->setRenderParam(renderParam);
+//    }
+
+//    // prepare layout
+
+//    qreal left = 0.0;
+//    qreal right = 0.0;
+//    qreal height = s_settings->documentView().pageSpacing();
+
+//    m_layout->prepareLayout(m_pageItems, m_rightToLeftMode,
+//                            left, right, height);
+
+//    scene()->setSceneRect(left, 0.0, right - left, height);
+}
+
+void DocumentView::prepareView(qreal newLeft, qreal newTop, bool forceScroll, int scrollToPage)
+{
+    const QRectF sceneRect = scene()->sceneRect();
+
+    qreal top = sceneRect.top();
+    qreal height = sceneRect.height();
+
+    int horizontalValue = 0;
+    int verticalValue = 0;
+
+    scrollToPage = scrollToPage != 0 ? scrollToPage : m_currentPage;
+
+//    const int highlightIsOnPage = m_currentResult.isValid() ? pageOfResult(m_currentResult) : 0;
+//    const bool highlightCurrentThumbnail = s_settings->documentView().highlightCurrentThumbnail();
+
+//    for(int index = 0; index < m_pageItems.count(); ++index)
+//    {
+//        PageItem* page = m_pageItems.at(index);
+
+//        if(m_continuousMode)
+//        {
+//            page->setVisible(true);
+//        }
+//        else
+//        {
+//            if(m_layout->leftIndex(index) == m_currentPage - 1)
+//            {
+//                page->setVisible(true);
+
+//                const QRectF boundingRect = page->boundingRect().translated(page->pos());
+
+//                top = boundingRect.top() - s_settings->documentView().pageSpacing();
+//                height = boundingRect.height() + 2.0 * s_settings->documentView().pageSpacing();
+//            }
+//            else
+//            {
+//                page->setVisible(false);
+
+//                page->cancelRender();
+//            }
+//        }
+
+//        if(index == scrollToPage - 1)
+//        {
+//            const QRectF boundingRect = page->uncroppedBoundingRect().translated(page->pos());
+
+//            horizontalValue = qFloor(boundingRect.left() + newLeft * boundingRect.width());
+//            verticalValue = qFloor(boundingRect.top() + newTop * boundingRect.height());
+//        }
+
+//        if(index == highlightIsOnPage - 1)
+//        {
+//            m_highlight->setPos(page->pos());
+//            m_highlight->setTransform(page->transform());
+
+//            page->stackBefore(m_highlight);
+//        }
+
+//        m_thumbnailItems.at(index)->setHighlighted(highlightCurrentThumbnail && (index == m_currentPage - 1));
+//    }
+
+//    setSceneRect(sceneRect.left(), top, sceneRect.width(), height);
+
+//    if(!forceScroll && s_settings->documentView().minimalScrolling())
+//    {
+//        setValueIfNotVisible(horizontalScrollBar(), horizontalValue);
+//        setValueIfNotVisible(verticalScrollBar(), verticalValue);
+//    }
+//    else
+//    {
+//        horizontalScrollBar()->setValue(horizontalValue);
+//        verticalScrollBar()->setValue(verticalValue);
+//    }
+
+//    viewport()->update();
+}
+
 
 bool DocumentView::open(const QString& filePath)
 {
@@ -49,18 +230,18 @@ bool DocumentView::open(const QString& filePath)
     {
         QVector< Model::IPage* > pages;
 
-        //        if(!checkDocument(filePath, document, pages))
-        //        {
-        //            delete document;
-        //            qDeleteAll(pages);
+                if(!checkDocument(filePath, document, pages))
+                {
+                    delete document;
+                    qDeleteAll(pages);
 
-        //            return false;
-        //        }
+                    return false;
+                }
 
         //        m_fileInfo.setFile(filePath);
         //        m_wasModified = false;
 
-        //        m_currentPage = 1;
+                m_currentPage = 1;
 
         //        m_past.clear();
         //        m_future.clear();
@@ -71,8 +252,8 @@ bool DocumentView::open(const QString& filePath)
 
         //        adjustScrollBarPolicy();
 
-        //        prepareScene();
-        //        prepareView();
+                prepareScene();
+                prepareView();
 
         //        prepareThumbnailsScene();
 

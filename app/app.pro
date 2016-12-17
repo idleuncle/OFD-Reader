@@ -42,7 +42,8 @@ HEADERS  += \
     include/documentview.h \
     plugin/model.h \
     include/global.h \
-    include/pluginhandler.h
+    include/pluginhandler.h \
+    include/renderparam.h
 
 #FORMS    += mainwindow.ui
 

@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include "model.h"
+#include "renderparam.h"
 using namespace ofdreader::Model;
 namespace ofdreader
 {
@@ -29,12 +30,17 @@ public:
 
     void setRect(QRectF rect){m_rect = rect;}
 
+    RenderParam m_renderParam;
+
+
 
 
     inline void paintPage(QPainter* painter, const QRectF& exposedRect) const;
 private:
     QRectF m_rect;
     QRectF m_boundingRect;
+
+    QRectF m_cropRect;
 };
 
 }

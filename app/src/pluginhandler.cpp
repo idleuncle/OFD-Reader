@@ -127,7 +127,9 @@ Plugin* loadPlugin(const QString& fileName)
     {
         const QString localErrorString = pluginLoader.errorString();
 
-        const QString globalFileName = QDir(PLUGIN_INSTALL_PATH).absoluteFilePath(fileName);
+//        const QString globalFileName = QDir(PLUGIN_INSTALL_PATH).absoluteFilePath(fileName);
+        const QString globalFileName ="/Users/charles/workspace/qaa/build-OFD-Reader-Desktop_Qt_5_7_0_clang_64bit-Debug/libofdreader_image.dylib";
+        qDebug()<<"globalFileName:"<<globalFileName;
         pluginLoader.setFileName(globalFileName);
 
         if(!pluginLoader.load())
