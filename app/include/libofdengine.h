@@ -2,7 +2,7 @@
 #define LIBOFDENGINE_H
 #include <QString>
 #include <QList>
-#include <cairo/cairo.h>
+//#include <cairo/cairo.h>
 
 
 //class Document

@@ -1,6 +1,6 @@
 #include "include/documentcontroller.h"
 #include <libofdengine.h>
-#include <cairo/cairo.h>
+//#include <cairo/cairo.h>
 #include <QImage>
 #include <QGraphicsPixmapItem>
 #include <QBrush>
@@ -24,6 +24,7 @@ bool DocumentController::loadFile(const QString &filePath)
 ////    m_OfdEngine->loadtest();
 //    emit documentChanged(filePath);
 //    emit pageChanged(_page);
+    return false;
 }
 
 int DocumentController::pageCount() const

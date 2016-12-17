@@ -36,9 +36,7 @@ DEFINES += PLUGIN_INSTALL_PATH=\\\"$${PLUGIN_INSTALL_PATH}\\\"
 INCLUDEPATH += ./include
 INCLUDEPATH += ./plugin
 HEADERS  += \
-    include/libofdengine.h \
     include/ofdmainwindow.h \
-    include/documentcontroller.h \
     include/pageitem.h \
     include/typedef.h \
     include/documentview.h \
@@ -49,10 +47,8 @@ HEADERS  += \
 #FORMS    += mainwindow.ui
 
 SOURCES += \
-    src/libofdengine.cpp \
     src/main.cpp \
     src/ofdmainwindow.cpp \
-    src/documentcontroller.cpp \
     src/pageitem.cpp \
     src/documentview.cpp \
     plugin/model.cpp \

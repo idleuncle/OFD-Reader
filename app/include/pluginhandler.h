@@ -34,10 +34,9 @@ namespace ofdreader
 
         QMap<FileType, Plugin*> m_plugins;
 
-        // 查找文件类型
+        // =查找文件类型=
         FileType findFileType(const QString& filePath);
-
-        // 静态加载插件
+        // =保存静态对象插件=
         QMultiMap< FileType, QString > m_objectNames;
 
         QMultiMap< FileType, QString > m_fileNames;

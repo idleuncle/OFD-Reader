@@ -13,9 +13,12 @@ class PageItem : public QGraphicsObject
 public:
     enum PaintMode
     {
-        DefaultMode, //默认
-        PresentationMode, //幻灯片模式
-        ThumbnailMode //缩略图模式
+        //默认
+        DefaultMode,
+        //幻灯片模式
+        PresentationMode,
+        //缩略图模式
+        ThumbnailMode
     };
     explicit PageItem();
     PageItem(Model::IPage* page, int index, PaintMode paintMode = DefaultMode, QGraphicsItem* parent = 0);
