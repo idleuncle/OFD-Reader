@@ -1,11 +1,11 @@
 #ifndef RENDERPARAM_H
 #define RENDERPARAM_H
-
+#include "typedef.h"
 
 #include <QSharedDataPointer>
 
 #include "global.h"
-#include <QDataStream>
+
 
 namespace ofdreader
 {
@@ -26,7 +26,7 @@ class RenderParam
 public:
     RenderParam(int resolutionX = 72, int resolutionY = 72, qreal devicePixelRatio = 1.0,
                 qreal scaleFactor = 1.0, Rotation rotation = RotateBy0,
-                RenderFlags flags = 0) : d(new SharedData)
+                ofdreader::RenderFlags flags = 0) : d(new SharedData)
     {
         d->resolutionX = resolutionX;
         d->resolutionY = resolutionY;
@@ -131,6 +131,6 @@ inline QDataStream& operator<<(QDataStream& stream, const RenderParam& that)
    return stream;
 }
 
-} // qpdfview
+} // ofdreader
 
 #endif // RENDERPARAM_H

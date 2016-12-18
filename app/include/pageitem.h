@@ -21,26 +21,53 @@ public:
         //缩略图模式
         ThumbnailMode
     };
-    explicit PageItem();
     PageItem(Model::IPage* page, int index, PaintMode paintMode = DefaultMode, QGraphicsItem* parent = 0);
 
-    QRectF boundingRect() const;
 
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
+    // 需要重boundingRect paint
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*);
+
+    QSizeF displayedSize() const { return displayedSize(renderParam()); }
+
+    const RenderParam& renderParam() const { return m_renderParam; }
+    void setRenderParam(const RenderParam& renderParam);
+
+    const QTransform& transform() const { return m_transform; }
+    const QTransform& normalizedTransform() const { return m_normalizedTransform; }
+
+
+    QSizeF displayedSize(const RenderParam& renderParam) const;
+
+
 
     void setRect(QRectF rect){m_rect = rect;}
 
     RenderParam m_renderParam;
 
-
-
+    // 处理transform, 旋转等
+    void prepareGeometry();
 
     inline void paintPage(QPainter* painter, const QRectF& exposedRect) const;
+public slots:
+    void refresh(bool keepObsoletePixmaps = false, bool dropCachedPixmaps = false);
+
+
+
 private:
+    Q_DISABLE_COPY(PageItem)
+
+    QSizeF m_size;
     QRectF m_rect;
     QRectF m_boundingRect;
 
     QRectF m_cropRect;
+
+    QTransform m_transform;
+    QTransform m_normalizedTransform;
+
+    int m_index;
+    PaintMode m_paintMode;
 };
 
 }

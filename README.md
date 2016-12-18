@@ -21,3 +21,11 @@ $ cd OFD-Reader
 $ mkdir build && cd build && qmake ../OFD-Reader.pro && make
 
 ```
+
+## 资料
+
+transform 
++ http://blog.csdn.net/liang19890820/article/details/51212890 
++ http://www.voidcn.com/blog/u011012932/article/p-6344115.html
++ http://blog.csdn.net/founderznd/article/details/51533777
+

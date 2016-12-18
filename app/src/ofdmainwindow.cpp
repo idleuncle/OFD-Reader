@@ -63,6 +63,28 @@ OfdMainWindow::~OfdMainWindow()
 
 }
 
+void OfdMainWindow::createWidget()
+{
+    m_tabWidget = new QTabWidget(this);
+
+    m_tabWidget->setDocumentMode(true);
+    m_tabWidget->setMovable(true);
+    m_tabWidget->setTabsClosable(true);
+    m_tabWidget->setElideMode(Qt::ElideRight);
+
+//    m_tabWidget->setTabPosition(static_cast< QTabWidget::TabPosition >(s_settings->mainWindow().tabPosition()));
+//    m_tabWidget->setTabBarPolicy(static_cast< TabWidget::TabBarPolicy >(s_settings->mainWindow().tabVisibility()));
+//    m_tabWidget->setSpreadTabs(s_settings->mainWindow().spreadTabs());
+
+    setCentralWidget(m_tabWidget);
+
+//    connect(m_tabWidget, SIGNAL(currentChanged(int)), SLOT(on_tabWidget_currentChanged(int)));
+//    connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), SLOT(on_tabWidget_tabCloseRequested(int)));
+//    connect(m_tabWidget, SIGNAL(tabDragRequested(int)), SLOT(on_tabWidget_tabDragRequested(int)));
+//    connect(m_tabWidget, SIGNAL(tabContextMenuRequested(QPoint,int)), SLOT(on_tabWidget_tabContextMenuRequested(QPoint,int)));
+
+}
+
 
 int OfdMainWindow::addTab(DocumentView* tab)
 {
@@ -182,7 +204,7 @@ bool OfdMainWindow::openInNewTab(const QString& filePath, int page, const QRectF
 ////            s_settings->mainWindow().setOpenPath(newTab->fileInfo().absolutePath());
 ////            m_recentlyUsedMenu->addOpenAction(newTab->fileInfo());
 
-////            const int index = addTab(newTab);
+            const int index = addTab(newTab);
 
 ////            QAction* tabAction = new QAction(m_tabWidget->tabText(index), newTab);
 ////            connect(tabAction, SIGNAL(triggered()), SLOT(on_tabAction_triggered()));
@@ -227,13 +249,13 @@ bool OfdMainWindow::openInNewTab(const QString& filePath, int page, const QRectF
 
 ////            connect(newTab, SIGNAL(customContextMenuRequested(QPoint)), SLOT(on_currentTab_customContextMenuRequested(QPoint)));
 
-////            newTab->show();
+            newTab->show();
 
 ////            s_database->restorePerFileSettings(newTab);
 ////            scheduleSaveTabs();
 
 ////            newTab->jumpToPage(page, false);
-////            newTab->setFocus();
+            newTab->setFocus();
 
 ////            if(!highlight.isNull())
 ////            {
@@ -303,6 +325,7 @@ void OfdMainWindow::init()
     this->createToolbar();
     this->createMainMenu();
     this->createDockers();
+    this->createWidget();
 }
 
 
@@ -335,10 +358,10 @@ void OfdMainWindow::createMainMenu()
 void OfdMainWindow::createDockers()
 {
 
-    m_outlineDock = new QDockWidget("outline", this);
-    m_outlineDock->setObjectName("outline");
-    m_outlineDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    addDockWidget(Qt::LeftDockWidgetArea, m_outlineDock);
+//    m_outlineDock = new QDockWidget("outline", this);
+//    m_outlineDock->setObjectName("outline");
+//    m_outlineDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+//    addDockWidget(Qt::LeftDockWidgetArea, m_outlineDock);
 
 }
 

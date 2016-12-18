@@ -40,9 +40,14 @@ public:
 
     void createMainMenu();
 
+    // 创建工具栏
     void createToolbar();
 
+    // 创建行为
     void craeteActions();
+
+    // 创建tabWidget 等
+    void createWidget();
 
 
     // file action

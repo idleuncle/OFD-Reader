@@ -3,12 +3,29 @@
 #include "pluginhandler.h"
 #include "pageitem.h"
 #include "global.h"
+#include "renderparam.h"
+#include "documentlayout.h"
+#include "typedef.h"
 using namespace ofdreader;
 
 DocumentView::DocumentView(QWidget *parent):
-    QGraphicsView(parent)
+    QGraphicsView(parent),
+    m_document(0),
+    m_pages(),
+    m_currentPage(-1),
+    m_firstPage(-1),
+    m_layout(new SinglePageLayout),
+    m_scaleMode(ScaleFactorMode),
+    m_scaleFactor(1.0),
+    m_rotation(RotateBy0),
+    m_renderFlags(0),
+    m_pageItems()
+
 {
     m_document = NULL;
+
+
+    setScene(new QGraphicsScene(this));
 }
 
 
@@ -31,6 +48,11 @@ void DocumentView::preparePages()
         scene()->addItem(page);
         m_pageItems.append(page);
     }
+}
+
+void DocumentView::setScaleFactor(qreal scaleFactor)
+{
+
 }
 
 void DocumentView::prepareDocument(Model::IDocument* document, const QVector<Model::IPage*>& pages)
@@ -100,8 +122,9 @@ void DocumentView::prepareScene()
 {
     // prepare render parameters and adjust scale factor
 
-//    RenderParam renderParam(logicalDpiX(), logicalDpiY(), 1.0,
-//                            scaleFactor(), rotation(), renderFlags());
+
+    //RenderParam renderParam(logicalDpiX(), logicalDpiY(), 1.0,scaleFactor(), rotation());
+    RenderParam renderParam(logicalDpiX(), logicalDpiY(), 1.0,scaleFactor(), rotation(),renderFlags());
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,1,0)
 
@@ -112,35 +135,37 @@ void DocumentView::prepareScene()
 
 #endif // QT_VERSION
 
-//    const qreal visibleWidth = m_layout->visibleWidth(viewport()->width());
-//    const qreal visibleHeight = m_layout->visibleHeight(viewport()->height());
+    const qreal visibleWidth = m_layout->visibleWidth(viewport()->width());
+    const qreal visibleHeight = m_layout->visibleHeight(viewport()->height());
 
-//    foreach(PageItem* page, m_pageItems)
-//    {
-//        const QSizeF displayedSize = page->displayedSize(renderParam);
+    foreach(PageItem* page, m_pageItems)
+    {
+        const QSizeF displayedSize = page->displayedSize(renderParam);
 
-//        if(m_scaleMode == FitToPageWidthMode)
-//        {
+        if(m_scaleMode == FitToPageWidthMode)
+        {
 //            adjustScaleFactor(renderParam, visibleWidth / displayedSize.width());
-//        }
-//        else if(m_scaleMode == FitToPageSizeMode)
-//        {
+        }
+        else if(m_scaleMode == FitToPageSizeMode)
+        {
 //            adjustScaleFactor(renderParam, qMin(visibleWidth / displayedSize.width(), visibleHeight / displayedSize.height()));
-//        }
+        }
 
-//        page->setRenderParam(renderParam);
-//    }
+        page->setRenderParam(renderParam);
+    }
 
 //    // prepare layout
 
-//    qreal left = 0.0;
-//    qreal right = 0.0;
-//    qreal height = s_settings->documentView().pageSpacing();
+    qreal left = 0.0;
+    qreal right = 0.0;
+//    qreal height = 0.0f;
+    qreal height = PAGESPACE;//s_settings->documentView().pageSpacing();
 
-//    m_layout->prepareLayout(m_pageItems, m_rightToLeftMode,
-//                            left, right, height);
+    m_layout->prepareLayout(m_pageItems, m_rightToLeftMode,
+                            left, right, height);
 
-//    scene()->setSceneRect(left, 0.0, right - left, height);
+    qDebug()<<"left:"<<left<<"right:"<<right<<"height:"<<height;
+    scene()->setSceneRect(left, 0.0, right - left, height);
 }
 
 void DocumentView::prepareView(qreal newLeft, qreal newTop, bool forceScroll, int scrollToPage)
@@ -217,7 +242,7 @@ void DocumentView::prepareView(qreal newLeft, qreal newTop, bool forceScroll, in
 //        verticalScrollBar()->setValue(verticalValue);
 //    }
 
-//    viewport()->update();
+    viewport()->update();
 }
 
 

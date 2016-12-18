@@ -43,7 +43,8 @@ HEADERS  += \
     plugin/model.h \
     include/global.h \
     include/pluginhandler.h \
-    include/renderparam.h
+    include/renderparam.h \
+    include/documentlayout.h
 
 #FORMS    += mainwindow.ui
 
@@ -54,7 +55,8 @@ SOURCES += \
     src/documentview.cpp \
     plugin/model.cpp \
     src/global.cpp \
-    src/pluginhandler.cpp
+    src/pluginhandler.cpp \
+    src/documentlayout.cpp
 
 
  macx {
