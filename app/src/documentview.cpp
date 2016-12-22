@@ -68,6 +68,14 @@ void DocumentView::prepareDocument(Model::IDocument* document, const QVector<Mod
     preparePages();
 }
 
+void DocumentView::prepareBackground()
+{
+    QColor backgroundColor = QColor(Qt::GlobalColor::gray);
+
+    scene()->setBackgroundBrush(QBrush(backgroundColor));
+//    m_thumbnailsScene->setBackgroundBrush(QBrush(backgroundColor));
+}
+
 bool DocumentView::checkDocument(const QString& filePath, Model::IDocument* document, QVector<Model::IPage*>& pages)
 {
 //    if(document->isLocked())
@@ -279,6 +287,7 @@ bool DocumentView::open(const QString& filePath)
 
                 prepareScene();
                 prepareView();
+                prepareBackground();
 
         //        prepareThumbnailsScene();
 

@@ -29,6 +29,7 @@ public:
     void prepareScene();
     void prepareView(qreal newLeft = 0.0, qreal newTop = 0.0, bool forceScroll = true, int scrollToPage = 0);
 
+    void prepareBackground();
 
     ScaleMode scaleMode() const { return m_scaleMode; }
     void setScaleMode(ScaleMode scaleMode);

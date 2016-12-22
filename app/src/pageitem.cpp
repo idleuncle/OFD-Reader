@@ -7,14 +7,17 @@ using namespace ofdreader;
 
 PageItem::PageItem(Model::IPage* page, int index, PaintMode paintMode /*= DefaultMode*/, QGraphicsItem* parent/* = 0*/):
     QGraphicsObject(parent),
+    m_page(page),
     m_boundingRect(),
     m_cropRect(),
+    m_rect(),
     m_size(page->size()),
     m_index(index),
     m_paintMode(paintMode),
     m_renderParam(),
     m_transform()
 {
+//    page->render()
 
 
 
@@ -47,13 +50,108 @@ void PageItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 
 }
 
+
+void PageItem::run()
+{
+//#define CANCELLATION_POINT if(testCancellation()) { finish(); return; }
+
+//    CANCELLATION_POINT
+
+//    QImage image;
+//    QRectF cropRect;
+
+//#if QT_VERSION >= QT_VERSION_CHECK(5,1,0)
+
+//    const qreal devicePixelRatio = m_renderParam.devicePixelRatio();
+
+//    const QRect rect =
+//            qFuzzyCompare(1.0, devicePixelRatio)
+//            ? m_rect
+//            : QTransform().scale(devicePixelRatio, devicePixelRatio).mapRect(m_rect);
+
+//#else
+
+//    const QRect& rect = m_rect;
+
+//#endif // QT_VERSION
+
+//    image = m_page->render(scaledResolutionX(m_renderParam), scaledResolutionY(m_renderParam),
+//                           m_renderParam.rotation(), rect);
+
+//#if QT_VERSION >= QT_VERSION_CHECK(5,1,0)
+
+//    image.setDevicePixelRatio(devicePixelRatio);
+
+//#endif // QT_VERSION
+
+//    if(m_renderParam.darkenWithPaperColor())
+//    {
+//        CANCELLATION_POINT
+
+//        composeWithColor(QPainter::CompositionMode_Darken, s_settings->pageItem().paperColor(), image);
+//    }
+//    else if(m_renderParam.lightenWithPaperColor())
+//    {
+//        CANCELLATION_POINT
+
+//        composeWithColor(QPainter::CompositionMode_Lighten, s_settings->pageItem().paperColor(), image);
+//    }
+
+//    if(m_renderParam.trimMargins())
+//    {
+//        CANCELLATION_POINT
+
+//        cropRect = trimMargins(s_settings->pageItem().paperColor().rgb() | alphaMask, image);
+//    }
+
+//    if(m_renderParam.convertToGrayscale())
+//    {
+//        CANCELLATION_POINT
+
+//        convertToGrayscale(image);
+//    }
+
+//    if(m_renderParam.invertColors())
+//    {
+//        CANCELLATION_POINT
+
+//        image.invertPixels();
+//    }
+
+//    CANCELLATION_POINT
+
+//    s_dispatcher->imageReady(m_parent,
+//                             m_renderParam,
+//                             m_rect, m_prefetch,
+//                             image, cropRect);
+
+//    finish();
+
+//#undef CANCELLATION_POINT
+}
+
+
+qreal scaledResolutionX(const RenderParam& renderParam)
+{
+    return renderParam.devicePixelRatio()
+            * renderParam.resolutionX()
+            * renderParam.scaleFactor();
+}
+
+qreal scaledResolutionY(const RenderParam& renderParam)
+{
+    return renderParam.devicePixelRatio()
+            * renderParam.resolutionY()
+            * renderParam.scaleFactor();
+}
+
 inline void PageItem::paintPage(QPainter* painter, const QRectF& exposedRect) const
 {
 //    if(s_settings->pageItem().decoratePages() && !presentationMode())
        {
            // background
 
-           QColor paperColor = Qt::GlobalColor::gray;//s_settings->pageItem().paperColor();
+           QColor paperColor = Qt::GlobalColor::white;//s_settings->pageItem().paperColor();
 
            if(m_renderParam.invertColors())
            {
@@ -61,72 +159,28 @@ inline void PageItem::paintPage(QPainter* painter, const QRectF& exposedRect) co
            }
 
            painter->fillRect(m_boundingRect, QBrush(paperColor));
+
+           const qreal devicePixelRatio = m_renderParam.devicePixelRatio();
+
+           const QRect rect =
+                   qFuzzyCompare(1.0, devicePixelRatio)
+                   ? m_rect
+                   : QTransform().scale(devicePixelRatio, devicePixelRatio).mapRect(m_rect);
+           QImage image = m_page->render(scaledResolutionX(m_renderParam), scaledResolutionY(m_renderParam),
+                                  m_renderParam.rotation(), rect);
+
+
+            painter->drawPixmap(m_rect.topLeft()+exposedRect.topLeft(),QPixmap::fromImage(image));
+            // drow border
+            painter->save();
+
+            painter->setClipping(false);
+
+            painter->drawRect(m_renderParam.trimMargins() ? PageItem::boundingRect() : PageItem::uncroppedBoundingRect());
+
+            painter->restore();
+
        }
-    return;
-
-//       // tiles
-
-//       if(!useTiling())
-//       {
-//           TileItem* tile = m_tileItems.first();
-
-//           if(tile->paint(painter, m_boundingRect.topLeft()))
-//           {
-//               tile->dropPixmap();
-//           }
-//       }
-//       else
-//       {
-//           const QRectF& translatedExposedRect = exposedRect.translated(-m_boundingRect.topLeft());
-
-//           foreach(TileItem* tile, m_tileItems)
-//           {
-//               const bool intersects = translatedExposedRect.intersects(tile->rect());
-//               const bool contains = m_exposedTileItems.contains(tile);
-
-//               if(intersects && !contains)
-//               {
-//                   m_exposedTileItems.insert(tile);
-//               }
-//               else if(!intersects && contains)
-//               {
-//                   m_exposedTileItems.remove(tile);
-
-//                   tile->cancelRender();
-//               }
-//           }
-
-//           bool allExposedPainted = true;
-
-//           foreach(TileItem* tile, m_exposedTileItems)
-//           {
-//               if(!tile->paint(painter, m_boundingRect.topLeft()))
-//               {
-//                   allExposedPainted = false;
-//               }
-//           }
-
-//           if(allExposedPainted)
-//           {
-//               foreach(TileItem* tile, m_exposedTileItems)
-//               {
-//                   tile->dropPixmap();
-//               }
-//           }
-//       }
-
-//       if(s_settings->pageItem().decoratePages() && !presentationMode())
-//       {
-//           // border
-
-//           painter->save();
-
-//           painter->setClipping(false);
-
-//           painter->drawRect(m_renderParam.trimMargins() ? PageItem::boundingRect() : PageItem::uncroppedBoundingRect());
-
-//           painter->restore();
-//       }
 
 }
 

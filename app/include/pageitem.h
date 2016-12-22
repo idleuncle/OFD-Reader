@@ -37,11 +37,12 @@ public:
     const QTransform& normalizedTransform() const { return m_normalizedTransform; }
 
 
+    const QRectF& uncroppedBoundingRect() const { return m_boundingRect; }
     QSizeF displayedSize(const RenderParam& renderParam) const;
 
 
 
-    void setRect(QRectF rect){m_rect = rect;}
+    void setRect(QRect rect){m_rect = rect;}
 
     RenderParam m_renderParam;
 
@@ -49,6 +50,7 @@ public:
     void prepareGeometry();
 
     inline void paintPage(QPainter* painter, const QRectF& exposedRect) const;
+    void run();
 public slots:
     void refresh(bool keepObsoletePixmaps = false, bool dropCachedPixmaps = false);
 
@@ -57,8 +59,9 @@ public slots:
 private:
     Q_DISABLE_COPY(PageItem)
 
+    Model::IPage* m_page;
     QSizeF m_size;
-    QRectF m_rect;
+    QRect m_rect;
     QRectF m_boundingRect;
 
     QRectF m_cropRect;
