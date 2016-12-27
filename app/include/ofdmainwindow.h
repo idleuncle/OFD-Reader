@@ -11,6 +11,9 @@
 #include <QStatusBar>
 #include <QMenu>
 #include <QMenuBar>
+#include <QComboBox>
+#include <QWidgetAction>
+
 
 namespace ofdreader
 {
@@ -31,6 +34,8 @@ public:
     int addTab(DocumentView* tab);
 
     void closeTab(DocumentView* tab);
+
+    DocumentView* currentTab();
 
     QList<DocumentView*> tabs() const;
 
@@ -100,6 +105,10 @@ public:
     // =放大缩小等工具栏=
     QToolBar* m_viewToolbar;
 
+
+    QComboBox* m_scaleComboBox;
+    QWidgetAction* m_scaleAction;
+
     // =菜单事件=
     QAction *m_fileSaveCopyAction;
 
@@ -145,6 +154,10 @@ protected slots:
     void on_single_page_triggered();
     // =双页显示模式
     void on_two_page_triggered();
+
+    void on_scaleFactor_activated(int i);
+
+//    void on_scaleFactor_changed(int i);
 };
 
 } // namespace ofdreader

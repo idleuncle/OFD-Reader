@@ -31,6 +31,9 @@ public:
 
     void prepareBackground();
 
+    void saveLeftAndTop(qreal& left, qreal& top) const;
+
+
     ScaleMode scaleMode() const { return m_scaleMode; }
     void setScaleMode(ScaleMode scaleMode);
 

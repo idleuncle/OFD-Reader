@@ -50,9 +50,31 @@ void DocumentView::preparePages()
     }
 }
 
+void DocumentView::saveLeftAndTop(qreal& left, qreal& top) const
+{
+    const PageItem* page = m_pageItems.at(m_currentPage - 1);
+    const QRectF boundingRect = page->uncroppedBoundingRect().translated(page->pos());
+
+    const QPointF topLeft = mapToScene(viewport()->rect().topLeft());
+
+    left = (topLeft.x() - boundingRect.x()) / boundingRect.width();
+    top = (topLeft.y() - boundingRect.y()) / boundingRect.height();
+}
+
 void DocumentView::setScaleFactor(qreal scaleFactor)
 {
+    m_scaleFactor = scaleFactor;
 
+    if(m_scaleMode == ScaleFactorMode)
+    {
+        qreal left = 0.0, top = 0.0;
+        saveLeftAndTop(left, top);
+
+        prepareScene();
+        prepareView(left, top);
+    }
+
+//    emit scaleFactorChanged(m_scaleFactor);
 }
 
 void DocumentView::prepareDocument(Model::IDocument* document, const QVector<Model::IPage*>& pages)

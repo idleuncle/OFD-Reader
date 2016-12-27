@@ -83,6 +83,36 @@ void OfdMainWindow::createWidget()
 //    connect(m_tabWidget, SIGNAL(tabDragRequested(int)), SLOT(on_tabWidget_tabDragRequested(int)));
 //    connect(m_tabWidget, SIGNAL(tabContextMenuRequested(QPoint,int)), SLOT(on_tabWidget_tabContextMenuRequested(QPoint,int)));
 
+
+
+    m_scaleComboBox = new QComboBox(this);
+
+    m_scaleComboBox->setEditable(true);
+    m_scaleComboBox->setInsertPolicy(QComboBox::NoInsert);
+
+    m_scaleComboBox->addItem(tr("Page width"));
+    m_scaleComboBox->addItem(tr("Page size"));
+    m_scaleComboBox->addItem("50 %", 0.5);
+    m_scaleComboBox->addItem("75 %", 0.75);
+    m_scaleComboBox->addItem("100 %", 1.0);
+    m_scaleComboBox->addItem("125 %", 1.25);
+    m_scaleComboBox->addItem("150 %", 1.5);
+    m_scaleComboBox->addItem("200 %", 2.0);
+    m_scaleComboBox->addItem("300 %", 3.0);
+    m_scaleComboBox->addItem("400 %", 4.0);
+    m_scaleComboBox->addItem("500 %", 5.0);
+
+    connect(m_scaleComboBox, SIGNAL(activated(int)), SLOT(on_scaleFactor_activated(int)));
+
+    connect(m_scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(on_scaleFactor_changed(int)));
+//    connect(m_scaleComboBox->lineEdit(), SIGNAL(editingFinished()), SLOT(on_scaleFactor_editingFinished()));
+//    connect(m_scaleComboBox->lineEdit(), SIGNAL(returnPressed()), SLOT(on_scaleFactor_returnPressed()));
+
+
+    m_scaleAction = new QWidgetAction(this);
+    m_scaleAction->setObjectName(QLatin1String("scaleFactor"));
+    m_scaleAction->setDefaultWidget(m_scaleComboBox);
+
 }
 
 
@@ -94,9 +124,9 @@ int OfdMainWindow::addTab(DocumentView* tab)
 
     const int index = m_tabWidget->addTab(tab, tab->title());
 //        m_tabWidget->setTabToolTip(index, tab->fileInfo().absoluteFilePath());
-        m_tabWidget->setCurrentIndex(index);
+    m_tabWidget->setCurrentIndex(index);
 
-        return index;
+    return index;
 }
 
 void OfdMainWindow::closeTab(DocumentView* tab)
@@ -307,6 +337,40 @@ void OfdMainWindow::on_two_page_triggered()
     QMessageBox::information(this,tr("on_two_page_triggered"),tr("on_two_page_triggered"));
 }
 
+
+void OfdMainWindow::on_scaleFactor_activated(int i)
+{
+
+
+//    QString ss;
+//    ss.arg("%d")= this->m_scaleComboBox->itemData(i).value();
+//    QString sale = QObject::tr("%1");
+//    const qreal scaleFactor = this->m_scaleComboBox->itemData(i).toReal();
+
+    bool ok = false;
+    const qreal scaleFactor = this->m_scaleComboBox->itemData(i).toReal(&ok);
+
+    if(ok)
+    {
+        currentTab()->setScaleFactor(scaleFactor);
+//        currentTab()->setScaleMode(ScaleFactorMode);
+    }
+
+//    QMessageBox::information(this,tr("on_scaleFactor_activated"),res);
+
+}
+
+//void OfdMainWindow::on_scaleFactor_changed(int i)
+//{
+//    QMessageBox::information(this,tr("on_scaleFactor_activated"),tr("on_scaleFactor_activated"));
+//}
+
+DocumentView* OfdMainWindow::currentTab()
+{
+     DocumentView* pdoc = (DocumentView*)this->m_tabWidget->currentWidget();
+     return pdoc;
+}
+
 bool OfdMainWindow::loadDocument(const QString &filename)
 {
 //    return m_OfdEngine->load(filename);
@@ -321,11 +385,12 @@ void OfdMainWindow::slotSaveCopy()
 
 void OfdMainWindow::init()
 {
+    this->createWidget();
     this->createActions();
     this->createToolbar();
     this->createMainMenu();
     this->createDockers();
-    this->createWidget();
+
 }
 
 
@@ -425,6 +490,28 @@ void OfdMainWindow::createToolbar()
                               << m_lastPageAction
                               );
 
+    m_viewToolbar= this->addToolBar(tr("viewtoolbar"));
+    m_viewToolbar->addActions(QList<QAction*>()
+                              << m_scaleAction);
+
+//    m_viewToolBar = createToolBar(tr("&View"),
+//                                  QLatin1String("viewToolBar"), s_settings->mainWindow().viewToolBar(),
+//                                  QList< QAction* >()
+//                                  << m_scaleFactorAction
+//                                  << m_continuousModeAction
+//                                  << m_twoPagesModeAction
+//                                  << m_twoPagesWithCoverPageModeAction
+//                                  << m_multiplePagesModeAction
+//                                  << m_rightToLeftModeAction
+//                                  << m_zoomInAction
+//                                  << m_zoomOutAction
+//                                  << m_originalSizeAction
+//                                  << m_fitToPageWidthModeAction
+//                                  << m_fitToPageSizeModeAction
+//                                  << m_rotateLeftAction
+//                                  << m_rotateRightAction
+//                                  << m_fullscreenAction
+//                                  << m_presentationAction);
 
 
 }
