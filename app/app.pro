@@ -31,6 +31,22 @@ DEFINES += PLUGIN_INSTALL_PATH=\\\"$${PLUGIN_INSTALL_PATH}\\\"
     DEFINES += IMAGE_PLUGIN_NAME=\\\"$${IMAGE_PLUGIN_NAME}\\\"
 }
 
+!without_ofd {
+    DEFINES += WITH_OFD
+
+    static_ofd_plugin {
+        isEmpty(OFD_PLUGIN_NAME):OFD_PLUGIN_NAME = libofdreader_ofd.a
+
+        DEFINES += STATIC_OFD_PLUGIN
+        LIBS += $$OFD_PLUGIN_NAME
+        PRE_TARGETDEPS += $$OFD_PLUGIN_NAME
+    }
+    else {
+        isEmpty(OFD_PLUGIN_NAME):OFD_PLUGIN_NAME = libofdreader_ofd.dylib
+    }
+
+    DEFINES += OFD_PLUGIN_NAME=\\\"$${OFD_PLUGIN_NAME}\\\"
+}
 
 
 INCLUDEPATH += ./include
