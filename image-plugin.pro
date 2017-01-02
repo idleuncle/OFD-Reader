@@ -4,7 +4,7 @@ TARGET = ofdreader_image
 TEMPLATE = lib
 CONFIG += plugin
 CONFIG += console
-!static_image_plugin:CONFIG += staticlib
+static_image_plugin:CONFIG += staticlib
 
 TARGET_SHORT = ofdreaderimg
 !isEmpty(PLUGIN_DESTDIR): DESTDIR = $$PLUGIN_DESTDIR
@@ -22,7 +22,7 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-!static_image_plugin {
+static_image_plugin {
     target.path = $${PLUGIN_INSTALL_PATH}
     INSTALLS += target
 }
