@@ -55,6 +55,9 @@ public:
     // 布局
     QScopedPointer<DocumentLayout> m_layout;
 
+    // 设置连续页
+    void setContinuousMode(bool continuousMode);
+
     bool m_continuousMode;
     bool m_rightToLeftMode;
     ScaleMode m_scaleMode;

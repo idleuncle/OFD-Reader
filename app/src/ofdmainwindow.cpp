@@ -104,7 +104,7 @@ void OfdMainWindow::createWidget()
 
     connect(m_scaleComboBox, SIGNAL(activated(int)), SLOT(on_scaleFactor_activated(int)));
 
-    connect(m_scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(on_scaleFactor_changed(int)));
+    //connect(m_scaleComboBox, SIGNAL(currentIndexChanged(int)), SLOT(on_scaleFactor_changed(int)));
 //    connect(m_scaleComboBox->lineEdit(), SIGNAL(editingFinished()), SLOT(on_scaleFactor_editingFinished()));
 //    connect(m_scaleComboBox->lineEdit(), SIGNAL(returnPressed()), SLOT(on_scaleFactor_returnPressed()));
 
@@ -228,6 +228,8 @@ void OfdMainWindow::on_open_new_tab_triggered()
 bool OfdMainWindow::openInNewTab(const QString& filePath, int page, const QRectF& highlight, bool quiet)
 {
     DocumentView* newTab = new DocumentView(this);
+//    on_continue_triggered
+
 
     if(newTab->open(filePath))
         {
@@ -303,6 +305,7 @@ bool OfdMainWindow::openInNewTab(const QString& filePath, int page, const QRectF
 ////                QMessageBox::warning(this, tr("Warning"), tr("Could not open '%1'.").arg(filePath));
 ////            }
         }
+        newTab->setContinuousMode(true);
 
         return false;
 }
@@ -337,6 +340,11 @@ void OfdMainWindow::on_two_page_triggered()
     QMessageBox::information(this,tr("on_two_page_triggered"),tr("on_two_page_triggered"));
 }
 
+void OfdMainWindow::on_continue_triggered(bool bcontinue)
+{
+    QMessageBox::information(this,tr("on_continue_triggered"),tr("on_continue_triggered"));
+
+}
 
 void OfdMainWindow::on_scaleFactor_activated(int i)
 {
@@ -416,6 +424,7 @@ void OfdMainWindow::createMainMenu()
         m_viewMenu->addActions(QList<QAction*>()
                                << m_singlePageAction
                                << m_twoPageAction
+                               << m_continueAction
                                );
 
 }
@@ -467,8 +476,11 @@ void OfdMainWindow::createActions()
     // view action
     m_singlePageAction = new QAction(QIcon(":/icons/document-open.svg"),tr("&single page...", "Action: single page"), this);
     m_twoPageAction = new QAction(QIcon(":/icons/document-open.svg"),tr("&two page...", "Action: two page"), this);
+    m_continueAction = new QAction(QIcon(":/icons/document-open.svg"),tr("&ContinueMode...", "Action: Continue"), this);
+
     connect(m_singlePageAction, SIGNAL(triggered()), this, SLOT(on_single_page_triggered()));
     connect(m_twoPageAction, SIGNAL(triggered()), this, SLOT(on_two_page_triggered()));
+    //connect(m_continueAction,SIGNAL(triggered()), this, SLOT(on_continue_triggered(bool)));
 
 
 }

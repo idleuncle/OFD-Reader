@@ -327,3 +327,14 @@ bool DocumentView::open(const QString& filePath)
 
     return document != 0;
 }
+
+void DocumentView::setContinuousMode(bool continuousMode)
+{
+    qreal left = 0.0, top = 0.0;
+    saveLeftAndTop(left, top);
+
+
+    prepareView(left, top);
+
+
+}

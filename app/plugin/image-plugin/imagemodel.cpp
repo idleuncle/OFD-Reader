@@ -99,12 +99,13 @@ ImageDocument::ImageDocument(QImage image) :
 
 int ImageDocument::numberOfPages() const
 {
-    return 1;
+    return 2;
 }
 
 IPage* ImageDocument::page(int index) const
 {
-    return index == 0 ? new ImagePage(m_image) : 0;
+//    return index == 0 ? new ImagePage(m_image) : 0;
+    return new ImagePage(m_image);
 }
 
 QStringList ImageDocument::saveFilter() const

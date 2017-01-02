@@ -75,6 +75,7 @@ public:
     //view action;
     QAction* m_singlePageAction;
     QAction* m_twoPageAction;
+    QAction* m_continueAction;
 
 
 
@@ -154,6 +155,9 @@ protected slots:
     void on_single_page_triggered();
     // =双页显示模式
     void on_two_page_triggered();
+
+    // =连续页模式
+    void on_continue_triggered(bool bcontinue);
 
     void on_scaleFactor_activated(int i);
 
