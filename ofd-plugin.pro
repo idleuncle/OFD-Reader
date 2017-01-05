@@ -6,7 +6,10 @@ TARGET = ofdreader_ofd
 TEMPLATE = lib
 CONFIG += plugin
 static_ofd_plugin:CONFIG += static
+
+#INCLUDEPATH += /Users/charles/workspace/qaa/libofd/tests/firsttest
 INCLUDEPATH += /Users/charles/workspace/qaa/libofd/include
+INCLUDEPATH += /Users/charles/workspace/qaa/libofd
 INCLUDEPATH += /usr/local/include
 INCLUDEPATH += ./sources
 

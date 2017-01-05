@@ -4,7 +4,7 @@
 #include <QCoreApplication>
 #include <QMutex>
 #include <QScopedPointer>
-#include "OFDPackage.h"
+#include <OFDFile.h>
 #include "OFDPage.h"
 #include "OFDDocument.h"
 
@@ -30,23 +30,39 @@ namespace ofdreader
 class OfdPlugin;
 namespace Model
 {
-
-    class OfdPackage: public IPackage
+    class OFDFile: public IFile
     {
         Q_DECLARE_TR_FUNCTIONS(Model::OfdPackage)
         friend class ofdreader::OfdPlugin;
     public:
-        ~OfdPackage();
+        ~OFDFile(){}
         virtual IDocument* document() const;
     private:
-        Q_DISABLE_COPY(OfdPackage)
+        Q_DISABLE_COPY(OFDFile)
 
-         OfdPackage(ofd::OFDPackage* package);
+         OFDFile(ofd::OFDFile* file);
 
          mutable QMutex m_mutex;
 
-         ofd::OFDPackage* m_package;
+         ofd::OFDFile* m_file;
     };
+
+//    class OfdPackage: public IPackage
+//    {
+//        Q_DECLARE_TR_FUNCTIONS(Model::OfdPackage)
+//        friend class ofdreader::OfdPlugin;
+//    public:
+//        ~OfdPackage();
+//        virtual IDocument* document() const;
+//    private:
+//        Q_DISABLE_COPY(OfdPackage)
+
+//         OfdPackage(ofd::OFDPackage* package);
+
+//         mutable QMutex m_mutex;
+
+//         ofd::OFDPackage* m_package;
+//    };
 
     class OfdPage : public IPage
     {

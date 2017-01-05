@@ -1,9 +1,10 @@
 #include "ofdmodel.h"
 #include <QSettings>
 #include <QDebug>
-#include "OFDPackage.h"
-#include "OFDPage.h"
-#include "OFDDocument.h"
+
+#include <OFDFile.h>
+#include <OFDPage.h>
+#include <OFDDocument.h>
 #include <QImage>
 
 #include <cairo/cairo.h>
@@ -25,25 +26,36 @@ namespace ofdreader
 
     namespace Model
     {
-
-
-    OfdPackage::OfdPackage(ofd::OFDPackage* package)
+    OFDFile::OFDFile(ofd::OFDFile* file)
     {
-
 
     }
 
-
-    OfdPackage::~OfdPackage()
+    IDocument* OFDFile::document() const
     {
+//        ofd::OfdDocument* pDocument = new ofd::OfdDocument(this->m_file->GetDefaultDocument());
+//        return pDocument;
+        ofd::OFDDocumentPtr document = ofd::OFDDocumentPtr(this->m_file->GetDefaultDocument());
+        return (IDocument*)document.get();
     }
 
-    IDocument* OfdPackage::document() const
-    {
-//        OfdDocument* pDocument = new OfdDocument(this->m_package->GetOFDDocument());
-        return new OfdDocument(NULL);
+//    OfdPackage::OfdPackage(ofd::OFDPackage* package)
+//    {
 
-    }
+
+//    }
+
+
+//    OfdPackage::~OfdPackage()
+//    {
+//    }
+
+//    IDocument* OfdPackage::document() const
+//    {
+////        OfdDocument* pDocument = new OfdDocument(this->m_package->GetOFDDocument());
+//        return new OfdDocument(NULL);
+
+//    }
 
 
 
@@ -219,19 +231,19 @@ Model::IDocument* OfdPlugin::loadDocument(const QString& filePath) const
 //    cairo_destroy (cr);
 ////            cairo_surface_destroy (surface);
 
-    ofd::OFDPackage *package = new ofd::OFDPackage();
-    Model::OfdPackage* pOfdPackage = NULL;
-//    bool bret = package->Open(filePath.toStdString());
-    bool bret = true;
-    if(bret)
-    {
-        qDebug()<<"OFDpackage "<<"xxxopen ok";
-        pOfdPackage = new Model::OfdPackage(package);
+//    ofd::OFDPackage *package = new ofd::OFDPackage();
+//    Model::OfdPackage* pOfdPackage = NULL;
+////    bool bret = package->Open(filePath.toStdString());
+//    bool bret = true;
+//    if(bret)
+//    {
+//        qDebug()<<"OFDpackage "<<"xxxopen ok";
+//        pOfdPackage = new Model::OfdPackage(package);
 
-        return pOfdPackage->document();
-    }
-    qDebug()<<"Ofd open fail";
-    return 0;
+//        return pOfdPackage->document();
+//    }
+//    qDebug()<<"Ofd open fail";
+//    return 0;
 }
 
 //SettingsWidget* OfdPlugin::createSettingsWidget(QWidget* parent) const

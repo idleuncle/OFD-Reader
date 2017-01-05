@@ -46,6 +46,13 @@ namespace ofdreader
             virtual IDocument* document() const = 0;
         };
 
+        class IFile
+        {
+        public:
+            virtual ~IFile() {}
+            virtual IDocument* document() const = 0;
+        };
+
     }
 
     class Plugin
