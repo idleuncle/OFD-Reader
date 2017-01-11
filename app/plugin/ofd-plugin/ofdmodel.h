@@ -4,7 +4,6 @@
 #include <QCoreApplication>
 #include <QMutex>
 #include <QScopedPointer>
-#include <OFDFile.h>
 #include "OFDPage.h"
 #include "OFDDocument.h"
 
@@ -30,22 +29,22 @@ namespace ofdreader
 class OfdPlugin;
 namespace Model
 {
-    class OFDFile: public IFile
-    {
-        Q_DECLARE_TR_FUNCTIONS(Model::OfdPackage)
-        friend class ofdreader::OfdPlugin;
-    public:
-        ~OFDFile(){}
-        virtual IDocument* document() const;
-    private:
-        Q_DISABLE_COPY(OFDFile)
+//    class OFDFile: public IFile
+//    {
+//        Q_DECLARE_TR_FUNCTIONS(Model::OfdPackage)
+//        friend class ofdreader::OfdPlugin;
+//    public:
+//        ~OFDFile(){}
+//        virtual IDocument* document() const;
+//    private:
+//        Q_DISABLE_COPY(OFDFile)
 
-         OFDFile(ofd::OFDFile* file);
+//         OFDFile(ofd::OFDFile* file);
 
-         mutable QMutex m_mutex;
+//         mutable QMutex m_mutex;
 
-         ofd::OFDFile* m_file;
-    };
+//         ofd::OFDFile* m_file;
+//    };
 
 //    class OfdPackage: public IPackage
 //    {
@@ -70,7 +69,7 @@ namespace Model
         friend class ofdreader::OfdPlugin;
 
     public:
-        OfdPage(QMutex* mutex, ofd::OFDPage* page);
+        OfdPage(QMutex* mutex, ofd::OFDPagePtr page);
         virtual ~OfdPage();
 
         virtual QSizeF size() const;
@@ -80,7 +79,7 @@ namespace Model
     private:
 
         mutable QMutex* m_mutex;
-        ofd::OFDPage* m_page;
+        ofd::OFDPagePtr m_page;
         cairo_surface_t* m_surface;
     };
 
@@ -95,7 +94,7 @@ namespace Model
     public:
         Q_DISABLE_COPY(OfdDocument)
 
-        OfdDocument(ofd::OFDDocument* document);
+        OfdDocument(ofd::OFDDocumentPtr document);
 
         ~OfdDocument();
 
@@ -130,7 +129,8 @@ namespace Model
 
 
         mutable QMutex m_mutex;
-        ofd::OFDDocument* m_document;
+//        ofd::OFDDocument* m_document;
+        ofd::OFDDocumentPtr document;
 
     };
 }
@@ -152,6 +152,9 @@ public:
     Model::IDocument* loadDocument(const QString& filePath) const;
 
 //    SettingsWidget* createSettingsWidget(QWidget* parent) const;
+
+    ofd::OFDPackagePtr ofdFile;// = std::make_shared<ofd::OFDPackage>();
+
 
 
 private:

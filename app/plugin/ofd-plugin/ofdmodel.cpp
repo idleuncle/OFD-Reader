@@ -1,11 +1,12 @@
 #include "ofdmodel.h"
 #include <QSettings>
 #include <QDebug>
-
-#include <OFDFile.h>
+#include <OFDPackage.h>
 #include <OFDPage.h>
 #include <OFDDocument.h>
 #include <QImage>
+#include <assert.h>
+#include <OFDCairoRender.h>
 
 #include <cairo/cairo.h>
 #define LOCK_ANNOTATION
@@ -26,58 +27,29 @@ namespace ofdreader
 
     namespace Model
     {
-    OFDFile::OFDFile(ofd::OFDFile* file)
-    {
-
-    }
-
-    IDocument* OFDFile::document() const
-    {
-//        ofd::OfdDocument* pDocument = new ofd::OfdDocument(this->m_file->GetDefaultDocument());
-//        return pDocument;
-        ofd::OFDDocumentPtr document = ofd::OFDDocumentPtr(this->m_file->GetDefaultDocument());
-        return (IDocument*)document.get();
-    }
-
-//    OfdPackage::OfdPackage(ofd::OFDPackage* package)
-//    {
 
 
-//    }
+        OfdDocument::OfdDocument(ofd::OFDDocumentPtr document):
+            m_mutex(),
+//            m_document(document)
+            document(document)
+        {
+            qDebug()<<"Ofd Oducment ssss";
+            bool bOpened = document->Open();
 
-
-//    OfdPackage::~OfdPackage()
-//    {
-//    }
-
-//    IDocument* OfdPackage::document() const
-//    {
-////        OfdDocument* pDocument = new OfdDocument(this->m_package->GetOFDDocument());
-//        return new OfdDocument(NULL);
-
-//    }
-
-
-
-    OfdDocument::OfdDocument(ofd::OFDDocument *document):
-        m_mutex(),
-        m_document(document)
-    {
-        qDebug()<<"Ofd Oducment ssss";
-    }
-    OfdDocument::~OfdDocument()
-    {
-        delete m_document;
-    }
-
-
+        }
+        OfdDocument::~OfdDocument()
+        {
+//            delete m_document;
+        }
 
 
         int OfdDocument::numberOfPages() const
         {
             LOCK_DOCUMENT
             qDebug()<<"get numberOfPages";
-            return 2;
+
+            return document->GetPagesCount();
 //            return m_document->GetPagesCount();
 
 
@@ -85,8 +57,8 @@ namespace ofdreader
 
         IPage* OfdDocument::page(int index) const
         {
-            ofd::OFDPage* page =NULL;// m_document->GetOFDPage(index);
-//            if(page)
+            ofd::OFDPagePtr page = document->GetPage(index);
+            if(page)
             {
                 return new OfdPage(&m_mutex,page);
             }
@@ -95,34 +67,40 @@ namespace ofdreader
 
 
 
-        OfdPage::OfdPage(QMutex *mutex, ofd::OFDPage *page):
+        OfdPage::OfdPage(QMutex *mutex, ofd::OFDPagePtr page):
             m_mutex(mutex),
             m_page(page)
         {
 //            cairo_surface_t *surface;
             cairo_t *cr;
+            if(page->Open())
+            {
+                m_surface =
+                    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 320, 480);
+                std::unique_ptr<ofd::OFDCairoRender> cairoRender(new ofd::OFDCairoRender(m_surface));
+                ofd::Render::DrawParams drawParams = std::make_tuple(0.0, 0.0, 1.0);
+                cairoRender->Draw(page, drawParams);
+            }
 
-            m_surface =
-                cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 320, 48);
-            cr = cairo_create (m_surface);
+//            cr = cairo_create (m_surface);
 
-            cairo_set_source_rgb (cr, 0.627, 0, 0);
-            cairo_select_font_face (cr, "Simsun",
-                                    CAIRO_FONT_SLANT_NORMAL,
-                                    CAIRO_FONT_WEIGHT_NORMAL);
+//            cairo_set_source_rgb (cr, 0.627, 0, 0);
+//            cairo_select_font_face (cr, "Simsun",
+//                                    CAIRO_FONT_SLANT_NORMAL,
+//                                    CAIRO_FONT_WEIGHT_NORMAL);
 
-            cairo_set_source_rgb(cr, 0.5, 0.4, 0.3);
-            cairo_set_font_size (cr, 24.0);
-            cairo_move_to (cr, 10.0, 34.0);
+//            cairo_set_source_rgb(cr, 0.5, 0.4, 0.3);
+//            cairo_set_font_size (cr, 24.0);
+//            cairo_move_to (cr, 10.0, 34.0);
 
-            std::string ss="aa我我我aabb";
-            cairo_show_text (cr, ss.c_str());
+//            std::string ss="aa我我我aabb";
+//            cairo_show_text (cr, ss.c_str());
 
-            //cout<<mystring.c_str();
-            //cout<<my1.c_str();
-//            cairo_surface_write_to_png (surface, "image.png");
+//            //cout<<mystring.c_str();
+//            //cout<<my1.c_str();
+////            cairo_surface_write_to_png (surface, "image.png");
 
-            cairo_destroy (cr);
+//            cairo_destroy (cr);
 //            cairo_surface_destroy (surface);
         }
 
@@ -135,8 +113,10 @@ namespace ofdreader
         QSizeF OfdPage::size() const
         {
 
-            return QSizeF(cairo_image_surface_get_width(m_surface) * 72.0 ,
-                          cairo_image_surface_get_height(m_surface) * 72.0 );
+            return QSizeF(cairo_image_surface_get_width(m_surface)  ,
+                                                    cairo_image_surface_get_height(m_surface) );
+//            return QSizeF(cairo_image_surface_get_width(m_surface) * 72.0 ,
+//                          cairo_image_surface_get_height(m_surface) * 72.0 );
         }
 
         QImage OfdPage::render(qreal horizontalResolution , qreal verticalResolution , Rotation rotation , const QRect& boundingRect) const
@@ -200,10 +180,28 @@ OfdPlugin::OfdPlugin(QObject* parent) : QObject(parent)
     setObjectName("OfdPlugin");
 
     m_settings = new QSettings("qpdfview", "pdf-plugin", this);
+    ofdFile = std::make_shared<ofd::OFDPackage>();
 }
 
 Model::IDocument* OfdPlugin::loadDocument(const QString& filePath) const
 {
+//    ofd::OFDFile* ofdFile = new ofd::OFDFile(filePath.toStdString());
+    if(!ofdFile->Open(filePath.toStdString()))
+    {
+        return NULL;
+    }
+    ofd::OFDDocumentPtr document = ofdFile->GetDefaultDocument();
+    return new OfdDocument(document);
+//    assert(document != nullptr);
+//    size_t nPageCount = document->GetPagesCount();
+//    qDebug()<<"pageCount:"<<nPageCount;
+//    return (IDocument*)document.get();
+
+
+
+
+
+    return NULL;
 
 //    cairo_surface_t *surface;
 //    cairo_t *cr;

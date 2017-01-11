@@ -16,8 +16,11 @@ PluginHandler::PluginHandler(QObject* parent):
 {
 #ifdef STATIC_IMAGE_PLUGIN
     m_objectNames.insertMulti(Image, QLatin1String("ImagePlugin"));
+    m_objectNames.insertMulti(Image, QLatin1String("OfdPlugin"));
+
 #else
     m_fileNames.insertMulti(Image, QLatin1String(IMAGE_PLUGIN_NAME));
+    m_fileNames.insertMulti(OFD, QLatin1String(OFD_PLUGIN_NAME));
 #endif
 
 }

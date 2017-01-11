@@ -281,7 +281,7 @@ bool DocumentView::open(const QString& filePath)
 
     Model::IDocument* document = PluginHandler::instance()->loadDocument(filePath);
 
-    if(document != 0)
+    if(document != NULL)
     {
         QVector< Model::IPage* > pages;
 
@@ -323,6 +323,10 @@ bool DocumentView::open(const QString& filePath)
         //        emit continuousModeChanged(m_continuousMode);
         //        emit layoutModeChanged(m_layout->layoutMode());
         //        emit rightToLeftModeChanged(m_rightToLeftMode);
+    }
+    else
+    {
+        qDebug()<<"null====";
     }
 
     return document != 0;
