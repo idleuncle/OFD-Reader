@@ -79,6 +79,7 @@ SOURCES += \
  # macx
     QT_CONFIG -= no-pkg-config
      INCLUDEPATH += /usr/local/Cellar/cairo/1.14.6_1/include
+
 #     LIBS += -L/usr/local/lib -lcairo
  }
 

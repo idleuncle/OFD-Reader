@@ -4,8 +4,8 @@
 #include <QCoreApplication>
 #include <QMutex>
 #include <QScopedPointer>
-#include "OFDPage.h"
-#include "OFDDocument.h"
+#include "ofd/Page.h"
+#include "ofd/Document.h"
 
 #include <cairo/cairo.h>
 
@@ -69,7 +69,7 @@ namespace Model
         friend class ofdreader::OfdPlugin;
 
     public:
-        OfdPage(QMutex* mutex, ofd::OFDPagePtr page);
+        OfdPage(QMutex* mutex, ofd::PagePtr page);
         virtual ~OfdPage();
 
         virtual QSizeF size() const;
@@ -79,7 +79,7 @@ namespace Model
     private:
 
         mutable QMutex* m_mutex;
-        ofd::OFDPagePtr m_page;
+        ofd::PagePtr m_page;
         cairo_surface_t* m_surface;
     };
 
@@ -94,7 +94,7 @@ namespace Model
     public:
         Q_DISABLE_COPY(OfdDocument)
 
-        OfdDocument(ofd::OFDDocumentPtr document);
+        OfdDocument(ofd::DocumentPtr document);
 
         ~OfdDocument();
 
@@ -130,7 +130,7 @@ namespace Model
 
         mutable QMutex m_mutex;
 //        ofd::OFDDocument* m_document;
-        ofd::OFDDocumentPtr document;
+        ofd::DocumentPtr document;
 
     };
 }
@@ -153,7 +153,7 @@ public:
 
 //    SettingsWidget* createSettingsWidget(QWidget* parent) const;
 
-    ofd::OFDPackagePtr ofdFile;// = std::make_shared<ofd::OFDPackage>();
+    ofd::PackagePtr ofdFile;// = std::make_shared<ofd::OFDPackage>();
 
 
 

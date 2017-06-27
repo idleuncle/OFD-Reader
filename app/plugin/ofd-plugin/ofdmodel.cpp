@@ -1,12 +1,12 @@
 #include "ofdmodel.h"
 #include <QSettings>
 #include <QDebug>
-#include <OFDPackage.h>
-#include <OFDPage.h>
-#include <OFDDocument.h>
+#include <ofd/Package.h>
+#include <ofd/Page.h>
+#include <ofd/Document.h>
 #include <QImage>
 #include <assert.h>
-#include <OFDCairoRender.h>
+#include <ofd/CairoRender.h>
 
 #include <cairo/cairo.h>
 #define LOCK_ANNOTATION
@@ -29,7 +29,7 @@ namespace ofdreader
     {
 
 
-        OfdDocument::OfdDocument(ofd::OFDDocumentPtr document):
+        OfdDocument::OfdDocument(ofd::DocumentPtr document):
             m_mutex(),
 //            m_document(document)
             document(document)
@@ -48,8 +48,9 @@ namespace ofdreader
         {
             LOCK_DOCUMENT
             qDebug()<<"get numberOfPages";
-
-            return document->GetPagesCount();
+            if(document)
+                return document->GetNumPages();
+            return 0;
 //            return m_document->GetPagesCount();
 
 
@@ -57,7 +58,7 @@ namespace ofdreader
 
         IPage* OfdDocument::page(int index) const
         {
-            ofd::OFDPagePtr page = document->GetPage(index);
+            ofd::PagePtr page = document->GetPage(index);
             if(page)
             {
                 return new OfdPage(&m_mutex,page);
@@ -67,7 +68,7 @@ namespace ofdreader
 
 
 
-        OfdPage::OfdPage(QMutex *mutex, ofd::OFDPagePtr page):
+        OfdPage::OfdPage(QMutex *mutex, ofd::PagePtr page):
             m_mutex(mutex),
             m_page(page)
         {
@@ -76,10 +77,10 @@ namespace ofdreader
             if(page->Open())
             {
                 m_surface =
-                    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 320, 480);
-                std::unique_ptr<ofd::OFDCairoRender> cairoRender(new ofd::OFDCairoRender(m_surface));
-                ofd::Render::DrawParams drawParams = std::make_tuple(0.0, 0.0, 1.0);
-                cairoRender->Draw(page, drawParams);
+                    cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 520, 680);
+//                std::unique_ptr<ofd::CairoRender> cairoRender(new ofd::CairoRender(m_surface));
+//                ofd::Render::DrawParams drawParams = std::make_tuple(0.0, 0.0, 1.0);
+//                cairoRender->DrawPage(page, drawParams);
             }
 
 //            cr = cairo_create (m_surface);
@@ -180,7 +181,7 @@ OfdPlugin::OfdPlugin(QObject* parent) : QObject(parent)
     setObjectName("OfdPlugin");
 
     m_settings = new QSettings("qpdfview", "pdf-plugin", this);
-    ofdFile = std::make_shared<ofd::OFDPackage>();
+    ofdFile = std::make_shared<ofd::Package>();
 }
 
 Model::IDocument* OfdPlugin::loadDocument(const QString& filePath) const
@@ -190,7 +191,8 @@ Model::IDocument* OfdPlugin::loadDocument(const QString& filePath) const
     {
         return NULL;
     }
-    ofd::OFDDocumentPtr document = ofdFile->GetDefaultDocument();
+    ofd::DocumentPtr document = ofdFile->GetDefaultDocument();
+
     return new OfdDocument(document);
 //    assert(document != nullptr);
 //    size_t nPageCount = document->GetPagesCount();

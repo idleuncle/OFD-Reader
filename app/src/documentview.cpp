@@ -52,6 +52,10 @@ void DocumentView::preparePages()
 
 void DocumentView::saveLeftAndTop(qreal& left, qreal& top) const
 {
+    if(m_pageItems.size()<=0)
+    {
+        return ;
+    }
     const PageItem* page = m_pageItems.at(m_currentPage - 1);
     const QRectF boundingRect = page->uncroppedBoundingRect().translated(page->pos());
 
